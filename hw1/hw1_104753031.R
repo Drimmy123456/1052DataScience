@@ -1,4 +1,4 @@
-
+##parse input argument
 
 args = commandArgs(trailingOnly=TRUE)
 if (length(args)==0) {
@@ -30,19 +30,19 @@ while(i < length(args)) {
 }
 
 
+## write output data
 
-set <- c()
-weight <- c()
-height <- c()
-
+set <- NULL
+weight <- NULL
+height <- NULL
 
 for (i in c(1:length(i_f))) {
   f <- i_f[i]
   set_name <- substr(f, 1, nchar(f)-4)
-  set <- append(set,set_name)
+  set <- c(set,set_name)
   data <- read.csv(f)
-  weight <- append(weight,round(max(data["weight"]),digit=2))
-  height <- append(height,round(max(data["height"]),digit=2))
+  weight <- c(weight,round(max(data["weight"]),digit=2))
+  height <- c(height,round(max(data["height"]),digit=2))
   
 }
 
@@ -50,6 +50,3 @@ out <- data.frame(set, weight, height)
 
 
 write.csv(out, file=o_f, row.names=FALSE)
-#print(set)
-#print(i_f)
-#print(out)
