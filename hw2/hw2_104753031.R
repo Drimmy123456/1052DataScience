@@ -1,7 +1,7 @@
 # read parameters
 args = commandArgs(trailingOnly=TRUE)
 if (length(args)==0) {
-  stop("USAGE: Rscript hw2_104753031.R --target male/female --files meth1 meth2 … methx --out result.csv", call.=FALSE)
+  stop("USAGE: Rscript hw2_104753031.R --target male/female --files meth1 meth2 ... methx --out result.csv", call.=FALSE)
 }
 
 # parse parameters
@@ -61,19 +61,19 @@ for(file in files)
   }
   
   # compute sensitivity, specificity, F1, AUC
-  sen<-c(sen,TP/(TP+FN))
-  sep<-c(sep,TN/(TN+FP))
-  f1<-c(f1,2*TP/(2*TP+FP+FN))
+  sen<-c(sen,round(TP/(TP+FN),digit=2))
+  sep<-c(sep,round(TN/(TN+FP),digit=2))
+  f1<-c(f1,round(2*TP/(2*TP+FP+FN),digit=2))
   
   # compute AUC
   library('ROCR')
   eval <- prediction(d$pred.score,d$reference)
   value<-attributes(performance(eval,'auc'))$y.values[[1]]
-  auc<-c(auc,value)
+  auc<-c(auc,round(value,digit=2))
 }
 out_data<-data.frame(method=ms, sensitivity=sen, specificity=sep, F1=f1, AUC=auc, stringsAsFactors = F)
 index<-sapply(out_data[,c("sensitivity","specificity","F1","AUC")], which.max)
 
 # output file
-out_data<-rbind(out_data,c(highest,ms[index]))
-write.table(out_data, file=out_f, row.ms = F, quote = F)
+out_data<-rbind(out_data,c("highest",ms[index]))
+write.table(out_data, file=out_f, quote = F, sep = ",", row.names=F)
