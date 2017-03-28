@@ -67,7 +67,14 @@ for(file in files)
   
   # compute AUC
   library('ROCR')
-  eval <- prediction(d$pred.score,d$reference)
+  if(target == "male"){
+    pred<-d$pred.score
+  }else if(target == "female"){
+    pred<-1-d$pred.score
+  }else{
+    stop(paste("Unknown target: ", target), call.=FALSE)
+  }
+  eval <- prediction(pred,d$reference)
   value<-attributes(performance(eval,'auc'))$y.values[[1]]
   auc<-c(auc,round(value,digit=2))
 }
