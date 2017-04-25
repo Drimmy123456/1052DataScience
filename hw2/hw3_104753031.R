@@ -90,13 +90,13 @@ for(file in files)
   # compute AUC
   
   if(target == "male"){
-    pred<-d$pred.score
+    eval <- prediction(d$pred.score,d$reference,c("female","male"))
   }else if(target == "female"){
-    pred<-1-d$pred.score
+    eval <- prediction(1-d$pred.score,d$reference,c("male","female"))
   }else{
     stop(paste("Unknown target: ", target), call.=FALSE)
   }
-  eval <- prediction(pred,d$reference)
+  
   value<-attributes(performance(eval,'auc'))$y.values[[1]]
   auc<-c(auc,round(value,digit=2))
   

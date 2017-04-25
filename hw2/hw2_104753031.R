@@ -44,37 +44,50 @@ for(file in files)
   name<-gsub(".csv", "", basename(file))
   ms<-c(ms,name)
   
-  # compute confusion table,TP,TN,FP,FN
-  cM <- table(truth=d$reference, prediction=d$prediction)
+  # compute TP,TN,FP,FN
   if(target == "male"){
-    TP<-cM[["male","male"]]
-    TN<-cM[["female","female"]]
-    FP<-cM[["female","male"]]
-    FN<-cM[["male","female"]]
+    not_target<-"female"
   }else if(target == "female"){
-    TP<-cM[["female","female"]]
-    TN<-cM[["male","male"]]
-    FP<-cM[["male","female"]]
-    FN<-cM[["female","male"]]
+    not_target<-"male"
   }else{
     stop(paste("Unknown target: ", target), call.=FALSE)
   }
   
-  # compute sensitivity, specificity, F1, AUC
+  TP<-0
+  TN<-0
+  FP<-0
+  FN<-0
+  i<-1 
+  while(i < length(d$reference)){
+    if(d$reference[i]==target && d$prediction==target){
+      TP<-TP+1
+    }else if(d$reference[i]==not_target && d$prediction==not_target){
+      TN<-TN+1
+    }else if(d$reference[i]==not_target && d$prediction==target){
+      FP<-FP+1
+    }else if(d$reference[i]==target && d$prediction==not_target){
+      FN<-FN+1
+    }
+    
+    
+    i<-i+1
+  }
+  
+  # compute sensitivity, specificity, F1
   sen<-c(sen,round(TP/(TP+FN),digit=2))
   sep<-c(sep,round(TN/(TN+FP),digit=2))
   f1<-c(f1,round(2*TP/(2*TP+FP+FN),digit=2))
   
   # compute AUC
-  library('ROCR')
+  
   if(target == "male"){
-    pred<-d$pred.score
+    eval <- prediction(d$pred.score,d$reference,c("female","male"))
   }else if(target == "female"){
-    pred<-1-d$pred.score
+    eval <- prediction(1-d$pred.score,d$reference,c("male","female"))
   }else{
     stop(paste("Unknown target: ", target), call.=FALSE)
   }
-  eval <- prediction(pred,d$reference)
+  
   value<-attributes(performance(eval,'auc'))$y.values[[1]]
   auc<-c(auc,round(value,digit=2))
 }
