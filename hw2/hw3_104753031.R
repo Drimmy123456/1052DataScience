@@ -54,31 +54,25 @@ for(file in files)
   ms<-c(ms,name)
   
   # compute TP,TN,FP,FN
-  if(target == "male"){
-    not_target<-"female"
-  }else if(target == "female"){
-    not_target<-"male"
-  }else{
-    stop(paste("Unknown target: ", target), call.=FALSE)
-  }
-  
   TP<-0
   TN<-0
   FP<-0
   FN<-0
   i<-1 
   while(i < length(d$reference)){
-    if(d$reference[i]==target && d$prediction==target){
-      TP<-TP+1
-    }else if(d$reference[i]==not_target && d$prediction==not_target){
-      TN<-TN+1
-    }else if(d$reference[i]==not_target && d$prediction==target){
-      FP<-FP+1
-    }else if(d$reference[i]==target && d$prediction==not_target){
-      FN<-FN+1
+    if(d$prediction[i]==target){
+      if(d$reference[i]==target){
+        TP<-TP+1
+      }else{
+        FP<-FP+1
+      }
+    }else{
+      if(d$reference[i]==target){
+        FN<-FN+1
+      }else{
+        TN<-TN+1
+      }
     }
-    
-    
     i<-i+1
   }
   
