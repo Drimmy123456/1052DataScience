@@ -31,7 +31,7 @@ print(paste("# fold     :", fold))
 print(paste("output file:", out_f))
 
 # read files
-d <- read.csv("Archaeal_tfpssm.csv",header=F)
+d <- read.csv("~/1052DataScience/hw5/Archaeal_tfpssm.csv",header=F)
 levels(d[,2])
 
 
